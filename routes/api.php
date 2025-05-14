@@ -20,7 +20,7 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
   Route::get('/courses/{id}', [CourseController::class, 'courses'])->name('courses');
   Route::post('/courses/{id}/comments', [CourseController::class, 'addComment'])->name('courses');
   Route::get('/courses/{id}/comments', [CourseController::class, 'getComment'])->name('courses');
-  Route::get('/enrollcourses/{id}', [CourseController::class, 'EnrollmentForCourse'])->name('enrollcourses');
+  Route::post('/enrollcourses', [CourseController::class, 'EnrollmentForCourse'])->name('enrollcourses');
            
 
 

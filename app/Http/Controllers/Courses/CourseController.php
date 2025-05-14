@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Resources\CourseResource;
 use App\Models\Comment;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\User;
 use App\Notifications\ErollmentNotification;
 use App\Notifications\ProcessCommentNotification;
@@ -121,11 +122,11 @@ class CourseController extends Controller
         foreach($rec_user as $rec){
            //  dd($rec->email);
        //      $email ="cole.williams84@yahoo.com";
-             $rec->notify(new ProcessCommentNotification($rec, $mailData));
+       Notification::send($rec,new ProcessCommentNotification($rec, $mailData));
 
-        }
+      }
      
-         } catch (Exception $e) {
+        } catch (Exception $e) {
 
                 $response['status'] = "failed";
                 $response['message'] = 'User not Enroll for this course';
@@ -164,28 +165,43 @@ class CourseController extends Controller
     }
 
     public function EnrollmentForCourse(ErollmentRequest $request){
-$response = array();
+       $response = array();
+      
         $validated = $request->validated();
         $user = $request->user();
-       // $course = "";
-        
-        try{
-         $course = Course::findOrFail($validated['course_id']);
-        if ($user->courses()->where('course_id', $course->id)->exists()) {
+       
+        //  try{
+       $course = Course::findOrFail($validated['course_id']);
+      // dd($course);
+     
+        $alreadyEnrolled = Enrollment::where('user_id', $user->id)
+        ->where('course_id', $validated['course_id'])
+        ->exists();
+         // dd($alreadyEnrolled);
+        if ($alreadyEnrolled) {
              $response['status'] = "failed";
             $response['message'] = 'User Already Enroll for this course';
         }
 
-            $user->enrolledCourses()->attach($course->id);
-
-             Notification::send($user->email, new ErollmentNotification($user,$course->id));
-             $response['status'] = "failed";
+        $enrollment = Enrollment::create([
+            'user_id' => $user->id,
+            'course_id' => $validated['course_id'],
+        ]);
+           // $user->enrolledCourses()->attach($course->id);
+         // dd($course->title);
+         if ($enrollment) {
+           $mailData = [
+            //'message'=>$validated['message'],
+            'course'=>$course->title
+         ];
+             Notification::send($user, new ErollmentNotification($user,$mailData));
+             $response['status'] = "success";
             $response['message'] = 'User Enrollment successfull ';
-
-     } catch (Exception $e) {
-             $response['status'] = "failed";
-            $response['message'] = 'Course not found';
-     }
+        }
+    //  } catch (Exception $e) {
+    //          $response['status'] = "failed";
+    //         $response['message'] = 'Course not found';
+    //  }
      return new CourseResource($response);
     }
 }

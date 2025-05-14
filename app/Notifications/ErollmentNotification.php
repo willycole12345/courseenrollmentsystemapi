@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+
 use App\Models\User;
 
 class ErollmentNotification extends Notification implements ShouldQueue
@@ -17,11 +18,11 @@ class ErollmentNotification extends Notification implements ShouldQueue
      * Create a new notification instance.
      */
     public $user;
-    public $course;
-    public function __construct(User $user, Course $course)
+    public $mailData;
+    public function __construct(User $user,$mailData)
     {
         $this->user = $user;
-        $this->course = $course;
+        $this->mailData = $mailData;
     }
 
     /**
@@ -39,9 +40,11 @@ class ErollmentNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+       // $course_title = Course::where('id',$this->course)->first();
+       // dd($course_title);
         return (new MailMessage)
-             ->line('Hi,'.$this->user,)
-            ->line('You have Enroll for this course'.$this->course->title)
+             ->line('Hi,'.$this->user->name,)
+            ->line('You have Enroll for this course '. $this->mailData['course'])
               ->line('Thank you for using our application!');
     }
 
