@@ -55,3 +55,10 @@ php artisan queue:work
 
 # Start development server
 php artisan serve
+
+# Login details for test
+
+{
+  "email": "user@example.com",
+  "password": "password"
+}
