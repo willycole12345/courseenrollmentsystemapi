@@ -2,26 +2,31 @@
 
 namespace App\Notifications;
 
+use App\Models\Comment;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\User;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 
-class ErollmentNotification extends Notification implements ShouldQueue
+class ProcessCommentNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use  Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public $user;
-    public $course;
-    public function __construct(User $user, Course $course)
+public $user;
+public $mailData;
+    public function __construct(User $user,$mailData)
     {
-        $this->user = $user;
-        $this->course = $course;
+         
+$this->user = $user;
+$this->mailData = $mailData;
+       
     }
 
     /**
@@ -39,10 +44,12 @@ class ErollmentNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-             ->line('Hi,'.$this->user,)
-            ->line('You have Enroll for this course'.$this->course->title)
-              ->line('Thank you for using our application!');
+     $coursetitle = Course::where('id',$this->mailData->course_id)->first();
+       return (new MailMessage)
+            ->line('Hi'.$this->user->name)
+            ->line('This Comment has been added to'.$coursetitle)
+            ->line('"'.$this->mailData->message.'"')
+            ->line('Thank you for using our application!');
     }
 
     /**

@@ -20,4 +20,8 @@ class Course extends Model
     public function comments() { 
         return $this->hasMany(Comment::class); 
     }
+    public function users()
+{
+    return $this->belongsToMany(User::class, 'enrollments')->withTimestamps();
+}
 }
