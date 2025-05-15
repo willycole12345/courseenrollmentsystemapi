@@ -7,6 +7,7 @@ A Laravel 11-based course enrollment system REST API endpoints secured with JWT 
 ## Features
 
 # API (RESTful)
+ Authorization:- BearerToken Generated from login
 - `POST /api/login`: Login Users
 - payload
 - `{
