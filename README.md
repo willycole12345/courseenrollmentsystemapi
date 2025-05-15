@@ -8,11 +8,24 @@ A Laravel 11-based course enrollment system REST API endpoints secured with JWT 
 
 # API (RESTful)
 - `POST /api/login`: Login Users
+- payload
+- `{
+  "email": "user@example.com",
+  "password": "password"
+}`
 - `GET /api/courses`: List of user's enrolled courses
 - `GET /api/courses/{id}`: Specific course details + first 5 comments
 - `GET /api/courses/{id}/comments`: Paginated comments
 - `POST /api/courses/{id}/comments`: Add comment to course
-- `POST /api/enrollcourses/{id}`: Enrollment for course
+- payload
+- `{
+    "message":"i love Jesus"
+}`
+- `POST /api/enrollcourses/`: Enrollment for course
+- payload
+- `{
+    "course_id": "7"
+}`
 - JWT authentication with Laravel Sanctum
 - Rate limiting with Laravel RateLimiter
 - Authorization policy for enrolled courses only
