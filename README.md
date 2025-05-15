@@ -7,6 +7,7 @@ A Laravel 11-based course enrollment system REST API endpoints secured with JWT 
 ## Features
 
 # API (RESTful)
+- `GET /api/login`: Login Users
 - `GET /api/courses`: List of user's enrolled courses
 - `GET /api/courses/{id}`: Specific course details + first 5 comments
 - `GET /api/courses/{id}/comments`: Paginated comments
